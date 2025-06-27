@@ -1,17 +1,30 @@
-<!-- resources/js/Pages/Login.vue -->
-<template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-      <h2 class="text-2xl font-semibold text-center mb-6">
-        Dashboard
-      </h2>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head } from '@inertiajs/vue3';
 </script>
 
-<style scoped>
-/* Ajustes puntuales si los necesitas */
-</style>
+<template>
+    <Head title="Dashboard" />
+
+    <AuthenticatedLayout>
+        <template #header>
+            <h2
+                class="text-xl font-semibold leading-tight text-gray-800"
+            >
+                Dashboard
+            </h2>
+        </template>
+
+        <div class="py-12">
+            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div
+                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
+                >
+                    <div class="p-6 text-gray-900">
+                        You're logged in!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AuthenticatedLayout>
+</template>
