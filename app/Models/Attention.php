@@ -11,6 +11,10 @@ class Attention extends Model
     use HasFactory;
 
     protected $table = 'attention';
+    protected $casts = [
+        'date'          => 'date',
+        'price_service' => 'decimal:2',
+    ];
 
     protected $fillable = [
         'date',

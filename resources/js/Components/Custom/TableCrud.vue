@@ -272,6 +272,7 @@ function doDelete() {
                             <input
                                 v-model="form[f.key]"
                                 :type="f.type || 'text'"
+                                :step="0.01"
                                 :placeholder="f.placeholder || ''"
                                 class="mt-1 block w-full rounded border-gray-300"
                             />

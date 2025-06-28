@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+USE App\Http\Controllers\PersonController;
+USE App\Http\Controllers\CiteController;
+USE App\Http\Controllers\AttentionController;
+USE App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,9 +27,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // CRUD Peluquería
-    Route::resource('clientes', App\Http\Controllers\PersonController::class);
-    Route::resource('citas',    App\Http\Controllers\CiteController::class);
-    Route::resource('atenciones', App\Http\Controllers\AttentionController::class);
+    Route::resource('clientes', PersonController::class);
+    Route::resource('citas',    CiteController::class);
+    Route::resource('atenciones', AttentionController::class)
+        ->parameters(['atenciones' => 'atencion']);
+
+    Route::resource('servicios', ServiceController::class);
 });
 
 require __DIR__.'/auth.php';

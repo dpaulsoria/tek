@@ -4,17 +4,33 @@ import { computed }         from 'vue'
 import AuthenticatedLayout  from '@/Layouts/AuthenticatedLayout.vue'
 import TableCrud            from '@/Components/Custom/TableCrud.vue'
 import type { Attention }   from './type'
-import type { Paginated, User } from '@/Types'
+import type { Cite }        from '@/Pages/Citas/type'
+import type { Service }     from '@/Pages/Servicios/type'
+import type { Paginated, User, SelectOption } from '@/Types'
 
 interface PageProps {
   atenciones: Paginated<Attention>
+  citas:       Cite[]        // vienen sin paginar
+  servicios:   Service[]     // vienen sin paginar
   auth:        { user: User }
 }
 
-const page = usePage<PageProps>()
+const page        = usePage<PageProps>()
 
-// reactivo al paginado de atenciones
-const atenciones = computed(() => page.props.value.atenciones)
+const atenciones  = computed(() => page.props.value.atenciones)
+const citasList    = computed(() => page.props.value.citas)
+const serviciosList = computed(() => page.props.value.servicios)
+
+// mapea tus citas y servicios para pasárselos al componente
+const citaOptions: SelectOption[] = citasList.value.map(c => ({
+  value: c.id,
+  label: c.date,
+}))
+
+const servicioOptions: SelectOption[] = serviciosList.value.map(s => ({
+  value: s.id,
+  label: s.name,
+}))
 </script>
 
 <template>
@@ -25,33 +41,28 @@ const atenciones = computed(() => page.props.value.atenciones)
       resourceName="atenciones"
       title="Atenciones"
       :columns="[
-        { key:'date',          label:'Fecha'        },
-        { key:'cite_id',       label:'Cita'         },
-        { key:'service_id',    label:'Servicio'     },
-        { key:'price_service', label:'Precio'       },
+        { key:'date',          label:'Fecha'    },
+        {
+          key:'cite_id',
+          label:'Cita',
+          formatter: item => item.cite
+            ? `${item.cite.date} (#${item.cite_id})`
+            : `#${item.cite_id}`
+        },
+        {
+          key:'service_id',
+          label:'Servicio',
+          formatter: item => item.service
+            ? item.service.name
+            : `#${item.service_id}`
+        },
+        { key:'price_service', label:'Precio'   },
       ]"
       :formFields="[
-        {
-          key:'date',          label:'Fecha',        type:'date'
-        },
-        {
-          key:'cite_id',       label:'Cita',         type:'select',
-          options: atenciones.value.data.map(a => ({
-            value: a.cite_id,
-            label: a.cite ? `${a.cite.date} (ID #${a.cite_id})` : `#${a.cite_id}`
-          }))
-        },
-        {
-          key:'service_id',    label:'Servicio',     type:'select',
-          options: atenciones.value.data.map(a => ({
-            value: a.service_id,
-            label: a.service?.name || `#${a.service_id}`
-          }))
-        },
-        {
-          key:'price_service', label:'Precio',
-          type:'number', step:0.01, min:0
-        },
+        { key:'date',          label:'Fecha',     type:'date' },
+        { key:'cite_id',       label:'Cita',      type:'select', options: citaOptions },
+        { key:'service_id',    label:'Servicio',  type:'select', options: servicioOptions },
+        { key:'price_service', label:'Precio',    type:'number', placeholder:'0.00' },
       ]"
       :items="atenciones"
     />
