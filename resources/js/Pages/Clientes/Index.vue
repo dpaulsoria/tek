@@ -17,12 +17,15 @@ function goTo(p: number) {
     return () => $inertia.get("/clientes", { page: p });
 }
 
-const showModal = ref(false);
-const isEdit = ref(false);
+const showModal = ref<boolean>(false);
+const isEdit = ref<boolean>(false);
+const editingId = ref<number | null>(null);
 
 function openCreate() {
-    showModal.value = true;
     isEdit.value = false;
+    editingId.value = null;
+    form.reset();
+    showModal.value = true;
 }
 
 const form = useForm({
@@ -35,33 +38,42 @@ const form = useForm({
 });
 
 function openEdit(cliente: Person) {
-    showModal.value = true;
     isEdit.value = true;
-    form.document = cliente.document;
-    form.first_name = cliente.first_name;
-    form.last_name = cliente.last_name;
-    form.email = cliente.email;
-    form.phone = cliente.phone || "";
-    form.address = cliente.address || "";
+    editingId.value = cliente.id;
+    Object.assign(form, {
+        document:   cliente.document,
+        first_name: cliente.first_name,
+        last_name:  cliente.last_name,
+        email:      cliente.email,
+        phone:      cliente.phone || '',
+        address:    cliente.address || '',
+    })
+    showModal.value = true;
 }
 
 
-function submitEdit() {
-    form.put(route("clientes.edit"), {
+function submitForm() {
+  if (isEdit.value && editingId.value !== null) {
+    // Llamada PUT a clientes.update pasando el id
+    form.put(
+      route('clientes.update', editingId.value),
+      {
         onSuccess: () => form.reset(),
-        onFinish: () => showModal.value = false,
-    });
-}
-
-function submitCreate() {
-    form.post(route("clientes.store"), {
+        onFinish:  () => (showModal.value = false),
+      }
+    )
+  } else {
+    form.post(
+      route('clientes.store'),
+      {
         onSuccess: () => form.reset(),
-        onFinish: () => showModal.value = false,
-    });
+        onFinish:  () => (showModal.value = false),
+      }
+    )
+  }
 }
-
 function deleteCliente(idCliente: number) {
-    
+
 }
 </script>
 
@@ -150,7 +162,7 @@ function deleteCliente(idCliente: number) {
                 </div>
 
                 <!-- Cuerpo del formulario -->
-                <form @submit.prevent="submitCreate" class="space-y-4">
+                <form @submit.prevent="submitForm" class="space-y-4">
                     <div>
                         <label class="block text-sm">Documento</label>
                         <input
