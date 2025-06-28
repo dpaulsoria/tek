@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, usePage, Link } from "@inertiajs/vue3";
+import { Head, usePage } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 import type { Person } from "./type";
 import type { Paginated } from "@/Types";
@@ -84,7 +84,7 @@ function deleteCliente(idCliente: number) {
             <h1 class="text-2xl font-semibold">Clientes</h1>
             <button
                 @click="openCreate"
-                class="inline-block rounded bg-red-500 px-4 py-2 text-black hover:bg-red-600"
+                class="inline-block rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
             >
                 Nuevo
             </button>
@@ -114,11 +114,11 @@ function deleteCliente(idCliente: number) {
             <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
               <button
                 @click="openEdit(c)"
-                class="inline-block rounded bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+                class="inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               >Editar</button>
               <button
                 @click="deleteCliente(c.id)"
-                class="inline-block rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                class="inline-block rounded bg-red-500 px-4 py-2 text-white hover:bg-red-700"
               >Borrar</button>
             </td>
           </tr>
