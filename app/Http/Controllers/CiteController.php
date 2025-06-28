@@ -12,7 +12,8 @@ class CiteController extends Controller
     public function index()
     {
         $citas = Cite::with('person')->orderBy('date', 'DESC')->paginate(10);
-        return Inertia::render('Citas/Index', compact('citas'));
+        $clientes = Person::select(['id','document','first_name','last_name'])->get();
+        return Inertia::render('Citas/Index', compact('citas', 'clientes'));
     }
 
     public function create()
