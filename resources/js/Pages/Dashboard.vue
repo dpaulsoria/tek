@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 </script>
 
 <template>
@@ -17,11 +17,17 @@ import { Head } from '@inertiajs/vue3';
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
-                >
-                    <div class="p-6 text-gray-900">
-                        You're logged in!
+                <div class="container py-6">
+                    <div class="row g-4">
+                    <div class="col-md-4">
+                        <Link href="/clientes" class="card p-4 text-center">Clientes</Link>
+                    </div>
+                    <div class="col-md-4">
+                        <Link href="/citas" class="card p-4 text-center">Citas</Link>
+                    </div>
+                    <div class="col-md-4">
+                        <Link href="/atenciones" class="card p-4 text-center">Atenciones</Link>
+                    </div>
                     </div>
                 </div>
             </div>
