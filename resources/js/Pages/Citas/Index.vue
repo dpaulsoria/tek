@@ -48,9 +48,9 @@ const clienteOptions: SelectOption[] = clientesList.value.map(c => ({
         { key:'amount_attention', label:'# Atenciones', type:'number', placeholder:'0' },
         { key:'total_service', label:'Total',    type:'number', placeholder:'0.00' },
         { key:'status',        label:'Estado',   type:'select', options:[
-            { value:'pending', label:'Pendiente'},
-            { value:'done',    label:'Completada'},
-            { value:'canceled',label:'Cancelada'},
+            { value:'Pendiente', label:'Pendiente'},
+            { value:'Completado',    label:'Completada'},
+            { value:'Cancelado',label:'Cancelada'},
         ]}
       ]"
       :items="citas"
