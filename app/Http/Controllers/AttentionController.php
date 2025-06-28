@@ -13,7 +13,7 @@ class AttentionController extends Controller
     public function index()
     {
         $atenciones = Attention::with('cite.person','service')
-            ->orderBy('date')
+            ->orderBy('date', 'DESC')
             ->paginate(10);
         return Inertia::render('Atenciones/Index', compact('atenciones'));
     }

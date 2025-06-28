@@ -11,7 +11,7 @@ class CiteController extends Controller
 {
     public function index()
     {
-        $citas = Cite::with('person')->orderBy('date')->paginate(10);
+        $citas = Cite::with('person')->orderBy('date', 'DESC')->paginate(10);
         return Inertia::render('Citas/Index', compact('citas'));
     }
 
