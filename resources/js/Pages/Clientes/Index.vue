@@ -1,92 +1,92 @@
 <script setup lang="ts">
-import { Head, usePage } from "@inertiajs/vue3";
-import { ref, computed } from "vue";
-import type { Person } from "./type";
-import type { Paginated } from "@/Types";
-import { User } from "vendor/laravel/breeze/stubs/inertia-react-ts/resources/js/types";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { useForm } from "@inertiajs/inertia-vue3";
-import { Inertia } from "@inertiajs/inertia";
+import { Head, usePage } from '@inertiajs/inertia-vue3'
+import { ref, computed }     from 'vue'
+import { useForm }           from '@inertiajs/inertia-vue3'
+import { Inertia }           from '@inertiajs/inertia'
+import { route }                 from 'ziggy-js'
 
-type Props = { clientes: Paginated<Person>; auth: { user: User } };
+import type { Person }       from './type'
+import type { Paginated, User }    from '@/Types'
+import AuthenticatedLayout   from '@/Layouts/AuthenticatedLayout.vue'
 
-const { clientes } = usePage<Props>().props;
-const fields = ["document", "first_name", "last_name", "email", "actions"];
-const page = computed(() => clientes.current_page);
+// Definimos solo la parte de los props que nos interesan
+interface PageProps {
+  clientes: Paginated<Person>;
+  auth: { user: User }
+}
+
+const page = usePage<PageProps>()
+const clientes = page.props.value.clientes ?? {
+  data: [],
+  current_page: 1,
+  last_page: 1,
+  total: 1,
+}
+
+const fields    = ['document','first_name','last_name','email','actions']
+const pageNum   = computed(() => clientes.current_page)
 
 function goTo(p: number) {
-    return () => Inertia.get("/clientes", { page: p });
+  Inertia.get(route('clientes.index'), { page: p })
 }
 
-const showModal = ref<boolean>(false);
-const isEdit = ref<boolean>(false);
-const editingId = ref<number | null>(null);
+const showModal  = ref(false)
+const isEdit     = ref(false)
+const editingId  = ref<number|null>(null)
+
+// Creamos el form con Inertia
+const form = useForm({
+  document:   '',
+  first_name: '',
+  last_name:  '',
+  email:      '',
+  phone:      '',
+  address:    '',
+})
 
 function openCreate() {
-    isEdit.value = false;
-    editingId.value = null;
-    form.reset();
-    showModal.value = true;
+  isEdit.value    = false
+  editingId.value = null
+  form.reset()
+  showModal.value = true
 }
-
-const form = useForm({
-    document: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    address: "",
-});
 
 function openEdit(cliente: Person) {
-    isEdit.value = true;
-    editingId.value = cliente.id;
-    Object.assign(form, {
-        document:   cliente.document,
-        first_name: cliente.first_name,
-        last_name:  cliente.last_name,
-        email:      cliente.email,
-        phone:      cliente.phone || '',
-        address:    cliente.address || '',
-    })
-    showModal.value = true;
+  isEdit.value    = true
+  editingId.value = cliente.id
+  form.set({
+    document:   cliente.document,
+    first_name: cliente.first_name,
+    last_name:  cliente.last_name,
+    email:      cliente.email,
+    phone:      cliente.phone  ?? '',
+    address:    cliente.address?? '',
+  })
+  showModal.value = true
 }
 
-
 function submitForm() {
-  if (isEdit.value && editingId.value !== null) {
-    // Llamada PUT a clientes.update pasando el id
-    form.put(
-      route('clientes.update', editingId.value),
-      {
-        onSuccess: () => {
-            form.reset();
-            Inertia.reload();
-        },
-        onFinish:  () => (showModal.value = false),
-      }
-    )
+  const opts = {
+    onSuccess: () => { form.reset(); Inertia.reload() },
+    onFinish:  () => { showModal.value = false },
+  }
+
+  if (isEdit.value && editingId.value != null) {
+    form.put(route('clientes.update', editingId.value), opts)
   } else {
-    form.post(
-      route('clientes.store'),
-      {
-        onSuccess: () => {
-            form.reset();
-            Inertia.reload();
-        },
-        onFinish:  () => (showModal.value = false),
-      }
-    )
+    form.post(route('clientes.store'), opts)
   }
 }
 
-
 function reloadClientes() {
-  Inertia.reload(); // fuerza a Inertia a volver a pedir los props/clientesvolver a pedir los props/clientes
+  Inertia.reload()
 }
 
-function deleteCliente(idCliente: number) {
-
+function deleteCliente(id: number) {
+  if (!confirm('¿Eliminar este cliente?')) return
+  Inertia.delete(route('clientes.destroy', id), {
+    onSuccess: () => Inertia.reload(),
+  })
 }
 </script>
 
@@ -111,7 +111,7 @@ function deleteCliente(idCliente: number) {
         </div>
         </div>
 
-        <div class="overflow-x-auto mx-5">
+        <div class="overflow-x-auto mx-5 bg-white rounded-lg shadow">
         <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -125,7 +125,7 @@ function deleteCliente(idCliente: number) {
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200 shadow">
-          <tr v-for="c in clientes.data" :key="c.id">
+          <tr v-for="c in clientes.data || []" :key="c.id">
             <td class="px-6 py-4 whitespace-nowrap">{{ c.document }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ c.first_name }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ c.last_name }}</td>

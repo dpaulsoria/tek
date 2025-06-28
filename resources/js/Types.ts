@@ -8,3 +8,9 @@ export interface Paginated<T> {
   from: number;
   to: number;
 }
+
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+}
