@@ -3,7 +3,8 @@ import { Head, usePage } from '@inertiajs/inertia-vue3'
 import { ref, computed }     from 'vue'
 import { useForm }           from '@inertiajs/inertia-vue3'
 import { Inertia }           from '@inertiajs/inertia'
-import { route }                 from 'ziggy-js'
+import { route }             from 'ziggy-js'
+import { toast } from 'vue3-toastify'
 
 import type { Person }       from './type'
 import type { Paginated, User }    from '@/Types'
@@ -31,8 +32,10 @@ function goTo(p: number) {
 }
 
 const showModal  = ref(false)
+const showConfirmationDelete = ref(false)
 const isEdit     = ref(false)
 const editingId  = ref<number|null>(null)
+const deletingId  = ref<number|null>(null)
 
 // Creamos el form con Inertia
 const form = useForm({
@@ -54,7 +57,7 @@ function openCreate() {
 function openEdit(cliente: Person) {
   isEdit.value    = true
   editingId.value = cliente.id
-  form.set({
+  Object.assign(form, {
     document:   cliente.document,
     first_name: cliente.first_name,
     last_name:  cliente.last_name,
@@ -65,9 +68,21 @@ function openEdit(cliente: Person) {
   showModal.value = true
 }
 
+function openConfirmationDelete(toDelete: number) {
+    showConfirmationDelete.value = true;
+    deletingId.value = toDelete;
+}
+
 function submitForm() {
   const opts = {
-    onSuccess: () => { form.reset(); Inertia.reload() },
+    onSuccess: () => {
+        toast.success(`Cliente ${isEdit.value ? 'editado' : 'agregado'} correctamente`);
+        form.reset();
+        Inertia.reload();
+    },
+    onError: () => {
+        toast.error(`Error al ${isEdit.value ? 'editar' : 'agregar'} el cliente`)
+    },
     onFinish:  () => { showModal.value = false },
   }
 
@@ -82,10 +97,20 @@ function reloadClientes() {
   Inertia.reload()
 }
 
-function deleteCliente(id: number) {
-  if (!confirm('¿Eliminar este cliente?')) return
-  Inertia.delete(route('clientes.destroy', id), {
-    onSuccess: () => Inertia.reload(),
+function deleteCliente() {
+  if (!deletingId.value) return
+  Inertia.delete(route('clientes.destroy', deletingId.value), {
+    onSuccess: () => {
+      toast.success('Cliente eliminado correctamente')
+      deletingId.value = null
+      Inertia.reload()
+    },
+    onError: () => {
+      toast.error('Error al eliminar el cliente')
+    },
+    onFinish: () => {
+      showConfirmationDelete.value = false
+    },
   })
 }
 </script>
@@ -138,7 +163,7 @@ function deleteCliente(id: number) {
                 class="inline-block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 shadow"
               >Editar</button>
               <button
-                @click="deleteCliente(c.id)"
+                @click="openConfirmationDelete(c.id)"
                 class="inline-block rounded bg-red-500 px-4 py-2 text-white hover:bg-red-700 shadow"
               >Borrar</button>
             </td>
@@ -157,7 +182,7 @@ function deleteCliente(id: number) {
                 @click="goTo(p)"
                 :class="[
                     'px-3 py-1 rounded',
-                    p === page.value
+                    p === pageNum
                         ? 'bg-red-500 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
                 ]"
@@ -293,6 +318,43 @@ function deleteCliente(id: number) {
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <div
+            v-if="showConfirmationDelete"
+            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        >
+            <div class="bg-white rounded-lg p-6 w-full max-w-xl">
+                <!-- Cabecera -->
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Borrar Cliente</h2>
+                    <button
+                        @click="showConfirmationDelete = false"
+                        class="text-gray-500 hover:text-gray-700"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <span>Esta seguro que desea eliminar a este cliente?</span>
+
+                <!-- Botones -->
+                <div class="flex justify-end gap-2">
+                    <button
+                        type="button"
+                        @click="showConfirmationDelete = false"
+                        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 shadow"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        @click="deleteCliente"
+                        :disabled="form.processing"
+                        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 shadow"
+                    >
+                        Borrar
+                    </button>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>
