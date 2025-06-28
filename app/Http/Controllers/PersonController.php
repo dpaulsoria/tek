@@ -10,7 +10,7 @@ class PersonController extends Controller
 {
     public function index()
     {
-        $clientes = Person::orderBy('last_name')->paginate(10);
+        $clientes = Person::orderBy('last_name')->paginate(5);
         return Inertia::render('Clientes/Index', compact('clientes'));
     }
 
