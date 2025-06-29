@@ -5,7 +5,7 @@ import './bootstrap'
 import { createInertiaApp } from '@inertiajs/inertia-vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { createApp, h } from 'vue'
-import { ZiggyVue } from '../../vendor/tightenco/ziggy'
+// import { ZiggyVue } from '../../vendor/tightenco/ziggy'
 import Toast from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 import NProgress from 'nprogress'
@@ -42,7 +42,7 @@ createInertiaApp({
     return createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(Toast, { position: 'top-right', timeout: 3000 })
-      .use(ZiggyVue)
+    //   .use(ZiggyVue)
       .mount(el)
   },
 })
