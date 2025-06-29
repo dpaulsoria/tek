@@ -23,6 +23,7 @@ COPY . .
 
 # 5) Instalamos deps PHP (ahora sí existe bootstrap/app.php)
 RUN composer install --no-dev --optimize-autoloader
+RUN php artisan ziggy:generate resources/js/ziggy.js
 
 # 6) Instalamos deps JS y compilamos assets
 RUN npm ci \
