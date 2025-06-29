@@ -14,7 +14,7 @@ const { canLogin, canRegister, laravelVersion, phpVersion } = defineProps<{
 }>()
 
 const page = usePage()
-const user = page.props.auth?.user ?? null
+const user = page.props.value.auth?.user ?? null
 
 </script>
 

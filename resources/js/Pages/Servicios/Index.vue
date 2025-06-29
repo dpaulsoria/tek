@@ -21,7 +21,7 @@ const servicios = computed(() => page.props.value.servicios)
   <Head title="Servicios" />
 
   <AuthenticatedLayout>
-    <TableCrud
+    <TableCrudpage
       resourceName="servicios"
       title="Servicios"
       :columns="[

@@ -29,15 +29,10 @@ interface Paginated<T> {
 
 /** Props que configuran todo el CRUD */
 const props = defineProps<{
-    /** Nombre del recurso para Ziggy: 'clientes', 'citas', etc. */
     resourceName: string;
-    /** Título que muestra en cabecera y toasts ('Clientes', 'Citas', ...) */
     title: string;
-    /** Columnas de la tabla */
     columns: Column[];
-    /** Definición de campos para el modal */
     formFields: FormField[];
-    /** Datos paginados que viene de usePage().props */
     items: Paginated<Record<string, any>>;
 }>();
 
