@@ -1,9 +1,18 @@
 import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
 import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
 export default defineConfig({
   base: '',
+resolve: {
+    alias: [
+      {
+        find: /^ziggy-custom$/,
+        replacement: path.resolve(__dirname, 'resources/js/ziggy-shim.js'),
+      },
+    ],
+  },
   build: {
     outDir: 'public/build',
     assetsDir: 'assets',

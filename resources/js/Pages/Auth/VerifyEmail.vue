@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
-import { route } from "ziggy-js";
+import { route } from "ziggy-custom";
 
 const props = defineProps({
     status: {

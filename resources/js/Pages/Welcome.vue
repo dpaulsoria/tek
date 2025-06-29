@@ -3,7 +3,7 @@
 import { Head, Link, usePage } from '@inertiajs/inertia-vue3'
 import logo from '@/assets/logo.svg'
 import images from '@/assets/images.jpeg'
-import { route } from "ziggy-js";
+import { route } from "ziggy-custom";
 
 // 1) Definimos sólo los props explícitos pasados en Inertia::render()
 const { canLogin, canRegister, laravelVersion, phpVersion } = defineProps<{

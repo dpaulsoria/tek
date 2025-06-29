@@ -5,7 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, useForm } from '@inertiajs/inertia-vue3';
-import { route } from "ziggy-js";
+import { route } from "ziggy-custom";
 
 defineProps({
     status: {

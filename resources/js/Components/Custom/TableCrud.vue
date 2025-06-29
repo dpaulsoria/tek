@@ -2,7 +2,7 @@
 import { ref, computed, defineProps } from "vue";
 import { useForm } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
-import { route } from "ziggy-js";
+import { route } from "ziggy-custom";
 import { toast } from "vue3-toastify";
 
 /** Columnas de la tabla */

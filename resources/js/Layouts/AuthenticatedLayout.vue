@@ -5,8 +5,10 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/inertia-vue3';
-import { route } from "ziggy-js";
+import { Link, usePage } from '@inertiajs/inertia-vue3';
+import { route } from "ziggy-custom";
+
+const page = usePage();
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -36,7 +38,7 @@ const showingNavigationDropdown = ref(false);
                             >
                                 <NavLink
                                     :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    :active="page.url.startsWith('dashboard')"
                                 >
                                     Dashboard
                                 </NavLink>
@@ -44,28 +46,28 @@ const showingNavigationDropdown = ref(false);
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
-                                <NavLink :href="route('clientes.index')" :active="route().current('clientes.*')">
+                                <NavLink :href="route('clientes.index')" :active="page.url.startsWith('clientes.*')">
                                     Clientes
                                 </NavLink>
                             </div>
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
-                                <NavLink :href="route('citas.index')"    :active="route().current('citas.*')">
+                                <NavLink :href="route('citas.index')"    :active="page.url.startsWith('citas.*')">
                                     Citas
                                 </NavLink>
                             </div>
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
-                                <NavLink :href="route('servicios.index')"    :active="route().current('servicios.*')">
+                                <NavLink :href="route('servicios.index')"    :active="page.url.startsWith('servicios.*')">
                                     Servicios
                                 </NavLink>
                             </div>
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                                 >
-                                <NavLink :href="route('atenciones.index')" :active="route().current('atenciones.*')">
+                                <NavLink :href="route('atenciones.index')" :active="page.url.startsWith('atenciones.*')">
                                     Atenciones
                                 </NavLink>
                             </div>
@@ -171,7 +173,7 @@ const showingNavigationDropdown = ref(false);
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
                             :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            :active="page.url.startsWith('dashboard')"
                         >
                             Dashboard
                         </ResponsiveNavLink>

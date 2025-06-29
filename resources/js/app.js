@@ -40,11 +40,14 @@ createInertiaApp({
     ),
   setup({ el, App, props, plugin }) {
     const app = createApp({ render: () => h(App, props) })
-      .use(plugin)
-      .use(Toast, { position: 'top-right', timeout: 3000 })
+    //   .use(plugin)
+    //   .use(Toast, { position: 'top-right', timeout: 3000 })
     //   .use(ZiggyVue)
-      .mount(el)
+    //   .mount(el)
     app.config.globalProperties.route = window.route
+    app.use(plugin)
+    app.use(Toast, { position: 'top-right', timeout: 3000 })
+    app.mount(el)
 
     return app
   },
