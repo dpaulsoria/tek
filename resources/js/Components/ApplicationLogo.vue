@@ -1,3 +1,6 @@
+<script setup lang="ts">
+import logo from '@/assets/logo.svg'
+</script>
 <template>
     <!-- <svg viewBox="0 0 316 316" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -5,7 +8,7 @@
         />
     </svg> -->
     <img
-        src="/svg/logo.svg"
+        :src="logo"
         alt="Logo Peluqueria Anita"
         class="h-16 w-16 mr-4 flex-shrink-0"
     />

@@ -1,6 +1,7 @@
 <!-- resources/js/Pages/Welcome.vue -->
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/inertia-vue3'
+import logo from '@/assets/logo.svg'
 
 // 1) Definimos sólo los props explícitos pasados en Inertia::render()
 const { canLogin, canRegister, laravelVersion, phpVersion } = defineProps<{
@@ -23,7 +24,7 @@ const user = page.props.auth?.user ?? null
     <header class="sticky top-0 bg-white shadow-sm">
       <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <img src="/svg/logo.svg" alt="Logo" class="h-10 w-10" />
+          <img :src="logo" alt="Logo" class="h-10 w-10" />
           <span class="text-lg font-semibold">Peluquería Anita</span>
         </div>
         <nav class="flex space-x-4" v-if="canLogin">
