@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/inertia-vue3'
 import logo from '@/assets/logo.svg'
+import images from '@/assets/images.jpeg'
 
 // 1) Definimos sólo los props explícitos pasados en Inertia::render()
 const { canLogin, canRegister, laravelVersion, phpVersion } = defineProps<{
@@ -52,7 +53,7 @@ const user = page.props.auth?.user ?? null
     <main class="flex-1 flex items-center justify-center bg-gray-50">
       <div class="text-center space-y-4 px-4">
         <img
-          src="/images.jpeg"
+          :src="images"
           alt="Peluquería Anita"
           class="mx-auto w-48 h-48 object-cover rounded-full shadow-md"
         />
