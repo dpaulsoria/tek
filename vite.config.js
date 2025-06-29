@@ -4,7 +4,7 @@ import laravel from 'laravel-vite-plugin'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig(({ command, mode }) => ({
-  base: mode === 'production' ? `${process.env.APP_URL}/build/` : '/',
+  base: '/',
   plugins: [
     laravel({
       input: 'resources/js/app.js',
