@@ -39,10 +39,13 @@ createInertiaApp({
       import.meta.glob('./Pages/**/*.vue', { eager: true })
     ),
   setup({ el, App, props, plugin }) {
-    return createApp({ render: () => h(App, props) })
+    const app = createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(Toast, { position: 'top-right', timeout: 3000 })
     //   .use(ZiggyVue)
       .mount(el)
+    app.config.globalProperties.route = window.route
+
+    return app
   },
 })
