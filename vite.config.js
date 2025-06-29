@@ -9,7 +9,7 @@ export default defineConfig({
     laravel({
       input: [
         'resources/js/app.js',
-        "resources/js/Pages/{$page['component']}.vue",
+        'resources/js/Pages/**/*.vue',
       ],
       refresh: true,
     }),
