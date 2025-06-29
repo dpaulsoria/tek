@@ -16,4 +16,4 @@ axios.defaults.headers.common['Accept'] = 'application/json'
   }
 })()
 // Exportar global
-window.axios = axios
+window.axios = axios"SQLSTATE[HY000] [2002] Cannot connect to MySQL using SSL (Connection: mysql, SQL: select * from `sessions` where `id` = eTsnwhSa7Pxlgn85UvyCCgXuSSAsJuNnyZJDVZsx limit 1)"
