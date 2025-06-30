@@ -30,10 +30,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // CRUD Peluquería
     Route::resource('clientes', PersonController::class);
     Route::resource('citas',    CiteController::class);
-    Route::resource('atenciones', AttentionController::class)
-        ->parameters(['atenciones' => 'atencion']);
-
+    Route::resource('atenciones', AttentionController::class)->parameters(['atenciones' => 'atencion']);
     Route::resource('servicios', ServiceController::class);
 });
+
+Route::prefix('api')
+     ->group(base_path('routes/api.php'));
 
 require __DIR__.'/auth.php';
