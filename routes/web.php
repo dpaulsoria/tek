@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::prefix('api')
-     ->group(base_path('routes/api.php'));
+    ->middleware('api')
+    ->group(base_path('routes/api.php'));
 
 require __DIR__.'/auth.php';
