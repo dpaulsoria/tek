@@ -4,17 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function register(Request $r)
+    /**
+     * Handle registration via API, returns user and token.
+     */
+    public function register(Request $request)
     {
-        $data = $r->validate([
-            'name' => 'required|string',
-            'email'=> 'required|email|unique:users',
-            'password'=>'required|min:6|confirmed',
+        $data = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
@@ -24,28 +28,55 @@ class AuthController extends Controller
         ]);
 
         $token = $user->createToken('mobile')->plainTextToken;
-        return response()->json(compact('user','token'), 201);
+
+        return response()->json([
+            'user'  => $user,
+            'token' => $token,
+        ], 201);
     }
 
-    public function login(Request $r)
+    /**
+     * Handle login via API, returns user and token.
+     */
+    public function login(Request $request)
     {
-        $creds = $r->only('email','password');
-        if (!Auth::attempt($creds)) {
-            return response()->json(['message'=>'Credenciales inválidas'], 401);
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        // Find user by email
+        $user = User::where('email', $credentials['email'])->first();
+        if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+            return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
-        $user  = Auth::user();
+
+        // Revoke previous tokens
+        $user->tokens()->delete();
+
+        // Create new token
         $token = $user->createToken('mobile')->plainTextToken;
-        return response()->json(compact('user','token'));
+
+        return response()->json([
+            'user'  => $user,
+            'token' => $token,
+        ]);
     }
 
-    public function logout(Request $r)
+    /**
+     * Return authenticated user profile.
+     */
+    public function user(Request $request)
     {
-        $r->user()->currentAccessToken()->delete();
-        return response()->json(['message'=>'Logout exitoso']);
+        return response()->json($request->user());
     }
 
-    public function user(Request $r)
+    /**
+     * Logout user (revoke token).
+     */
+    public function logout(Request $request)
     {
-        return response()->json($r->user());
+        $request->user()?->currentAccessToken()?->delete();
+        return response()->json(['message' => 'Logout exitoso']);
     }
 }

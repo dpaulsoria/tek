@@ -11,8 +11,8 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-# 3) Node.js para compilar assets
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+# 3) Node.js para compilar assets (ahora Node 20)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
  && apt-get install -y nodejs \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
@@ -21,7 +21,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 WORKDIR /usr/src/app
 COPY . .
 
-# 5) Instalamos deps PHP (ahora sí existe bootstrap/app.php)
+# 5) Instalamos deps PHP
 RUN composer install --no-dev --optimize-autoloader
 RUN php artisan ziggy:generate resources/js/ziggy.js
 
@@ -32,7 +32,7 @@ RUN npm ci \
 # 7) Exponemos el puerto de la app
 EXPOSE 10000
 
-# 8) Entrypoint: tu start.sh se encargará de certs, migraciones y levantar el servidor
+# 8) Entrypoint
 COPY start.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/start.sh
 ENTRYPOINT ["start.sh"]

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 
 class PersonController extends Controller
@@ -12,6 +13,12 @@ class PersonController extends Controller
     {
         $clientes = Person::orderBy('last_name')->paginate(5);
         return Inertia::render('Clientes/Index', compact('clientes'));
+    }
+
+    public function indexApp(): JsonResponse
+    {
+        $clientes = Person::orderBy('last_name')->get();
+        return response()->json($clientes, 200);
     }
 
     public function create()

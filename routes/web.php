@@ -34,8 +34,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('servicios', ServiceController::class);
 });
 
-Route::prefix('api')
-    ->middleware('api')
-    ->group(base_path('routes/api.php'));
-
 require __DIR__.'/auth.php';

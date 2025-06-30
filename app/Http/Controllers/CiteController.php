@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cite;
 use App\Models\Person;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 
 class CiteController extends Controller
@@ -34,6 +35,20 @@ class CiteController extends Controller
         ]);
         Cite::create($data);
         return redirect()->route('citas.index');
+    }
+
+    public function storeApp(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'date'             => 'required|date',
+            'time_arrival'     => 'required',
+            'cliente_id'       => 'required|exists:person,id',
+            'amount_attention' => 'nullable|integer',
+            'total_service'    => 'nullable|numeric',
+            'status'           => 'required|string',
+        ]);
+        $created = Cite::create($data);
+        return response()->json($created, 200);
     }
 
     public function edit(Cite $cita)
