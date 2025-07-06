@@ -14,10 +14,6 @@ import { Inertia } from '@inertiajs/inertia'
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel'
 
-
-// Debug: mostrar route('login') al cargar
-console.log('route login at top:', route('login'))
-
 // Configura NProgress
 NProgress.configure({
   showSpinner: false,

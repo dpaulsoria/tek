@@ -24,7 +24,7 @@ defineExpose({ show, hide })
       <div class="flex justify-end gap-2">
         <button @click="hide" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancelar</button>
         <button
-          @click="() => { props.onConfirm(); hide() }"
+          @click="() => { props.onConfirm(); hide(); }"
           :disabled="props.loading"
           class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
         >
