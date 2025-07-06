@@ -54,7 +54,7 @@ function changePage(page: number) {
           >
             {{ col.label }}
           </th>
-          <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
+          <th v-if="!props.hideActions" class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right">
             Acciones
           </th>
         </tr>
@@ -75,7 +75,7 @@ function changePage(page: number) {
           >
             {{ col.formatter ? col.formatter(item) : item[col.key] }}
           </td>
-          <td v-if="props.hideActions" class="px-6 py-4 whitespace-nowrap text-right space-x-2">
+          <td v-if="!props.hideActions" class="px-6 py-4 whitespace-nowrap text-right space-x-2">
             <slot name="actions" :item="item">
               <button
                 @click="handleEdit(item.id)"
