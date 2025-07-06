@@ -16,6 +16,7 @@ interface Paginated<T> {
 const props = defineProps<{
   columns: Column[]
   items: Paginated<Record<string, any>>
+  hideActions: boolean
 }>()
 const emit = defineEmits<{
   (e: 'edit', id: number): void
@@ -74,7 +75,7 @@ function changePage(page: number) {
           >
             {{ col.formatter ? col.formatter(item) : item[col.key] }}
           </td>
-          <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
+          <td v-if="props.hideActions" class="px-6 py-4 whitespace-nowrap text-right space-x-2">
             <slot name="actions" :item="item">
               <button
                 @click="handleEdit(item.id)"

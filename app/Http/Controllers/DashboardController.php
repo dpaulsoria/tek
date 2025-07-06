@@ -13,6 +13,12 @@ class DashboardController extends Controller
 {
     public function __invoke()
     {
+        $reports = Person::query()
+            ->withCount('cites')
+            ->withSum('cites', 'total_service')
+            ->withSum('attentions', 'price_service')
+            ->paginate(10);
+
         return Inertia::render('Dashboard', [
             'counts' => [
                 'clientes'   => Person::count(),
@@ -20,6 +26,7 @@ class DashboardController extends Controller
                 'atenciones' => Attention::count(),
                 'servicios'  => Service::count(),
             ],
+            'reports' => $reports,
         ]);
     }
 }
