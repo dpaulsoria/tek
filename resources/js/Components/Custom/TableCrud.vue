@@ -7,6 +7,7 @@ import { toast } from "vue3-toastify";
 import ModalDelete from '@/Components/Custom/ModalDelete.vue';
 import ModalForm from '@/Components/Custom/ModalForm.vue';
 import Header from '@/Components/Custom/Header.vue';
+import Table from '@/Components/Custom/Table.vue';
 
 /** Columnas de la tabla */
 interface Column {
@@ -48,14 +49,17 @@ const loading = computed(() => form.processing);
 const isEdit = ref(false);
 const editingId = ref<number | null>(null);
 const deletingId = ref<number | null>(null);
-const showModalDelete = ref<InstanceType<typeof ModalDelete> | null>(null);
+
 const showForm = ref<InstanceType<typeof ModalForm> | null>(null);
+const showDelete = ref<InstanceType<typeof ModalDelete> | null>(null);
 const header = ref<InstanceType<typeof Header> | null>(null);
 
+/** Recarga de página */
 function reload(page = 1) {
     Inertia.get(route(`${props.resourceName}.index`), { page });
 }
 
+/** Nuevo registro */
 function openCreate() {
     isEdit.value = false;
     editingId.value = null;
@@ -63,18 +67,23 @@ function openCreate() {
     showForm.value?.show();
 }
 
-function openEdit(item: Record<string, any>) {
+/** Editar registro por ID */
+function openEdit(id: number) {
+    const item = props.items.data.find((i) => i.id === id);
+    if (!item) return;
     isEdit.value = true;
-    editingId.value = item.id;
+    editingId.value = id;
     Object.assign(form, item);
     showForm.value?.show();
 }
 
+/** Confirmar borrado */
 function confirmDelete(id: number) {
     deletingId.value = id;
-    showModalDelete.value?.show()
+    showDelete.value?.show();
 }
 
+/** Enviar formulario Create/Update */
 function submit() {
     const opts = {
         onSuccess: () => {
@@ -102,17 +111,16 @@ function submit() {
     }
 }
 
+/** Ejecutar borrado */
 function doDelete() {
     if (!deletingId.value) return;
     Inertia.delete(route(`${props.resourceName}.destroy`, deletingId.value), {
         onSuccess: () => {
             toast.success(`${props.title} eliminado`);
-            showModalDelete.value?.hide()
+            showDelete.value?.hide();
             reload();
         },
-        onError: () => {
-            toast.error(`Error al eliminar ${props.title}`);
-        },
+        onError: () => toast.error(`Error al eliminar ${props.title}`),
     });
 }
 </script>
@@ -124,96 +132,15 @@ function doDelete() {
             :title="title"
             :loading="loading"
             :onCreate="openCreate"
-            :onReaload="reload"
+            :onReload="reload"
         />
-
-        <!-- Tabla -->
-        <div class="overflow-x-auto mx-5 bg-white rounded-lg shadow">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th
-                            v-for="col in columns"
-                            :key="col.key"
-                            :class="[
-                                'px-6 py-3 text-xs font-medium text-gray-500 uppercase',
-                                col.align === 'center'
-                                    ? 'text-center'
-                                    : col.align === 'right'
-                                    ? 'text-right'
-                                    : 'text-left',
-                            ]"
-                        >
-                            {{ col.label }}
-                        </th>
-                        <th
-                            class="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right"
-                        >
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="item in props.items.data" :key="item.id">
-                        <td
-                            v-for="col in columns"
-                            :key="col.key"
-                            :class="[
-                                'px-6 py-4 whitespace-nowrap',
-                                col.align === 'center'
-                                    ? 'text-center'
-                                    : col.align === 'right'
-                                    ? 'text-right'
-                                    : 'text-left',
-                            ]"
-                        >
-                            {{ item[col.key] }}
-                        </td>
-                        <td
-                            class="px-6 py-4 whitespace-nowrap text-right space-x-2"
-                        >
-                            <button
-                                @click="openEdit(item)"
-                                class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-                            >
-                                Editar
-                            </button>
-                            <button
-                                @click="confirmDelete(item.id)"
-                                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                            >
-                                Borrar
-                            </button>
-                        </td>
-                    </tr>
-                    <tr v-if="!props.items.data.length">
-                        <td
-                            :colspan="columns.length + 1"
-                            class="px-6 py-4 text-center text-gray-500"
-                        >
-                            No hay registros
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Paginación -->
-        <div class="flex justify-center space-x-1">
-            <button
-                v-for="p in props.items.last_page"
-                :key="p"
-                @click="reload(p)"
-                :class="[
-                    'px-3 py-1 rounded',
-                    p === props.items.current_page
-                        ? 'bg-red-500 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-                ]"
-            >
-                {{ p }}
-            </button>
-        </div>
+        <Table
+            :columns="columns"
+            :items="items"
+            @edit="openEdit"
+            @delete="confirmDelete"
+            @page="reload"
+        />
         <ModalForm
             ref="showForm"
             :title="title"
@@ -225,7 +152,7 @@ function doDelete() {
             :on-submit="submit"
         />
         <ModalDelete
-            ref="showModalDelete"
+            ref="showDelete"
             :loading="loading"
             :onConfirm="doDelete"
         />
