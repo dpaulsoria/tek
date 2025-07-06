@@ -9,3 +9,9 @@ export interface Cite {
   // si quieres acceso al nombre del cliente:
   person?: { id: number; name: string }
 }
+
+export enum CITE_STATE {
+    PENDIENTE = 'PENDIENTE',
+    CONFIRMADA = 'CONFIRMADA',
+    CANCELADA = 'CANCELADA',
+}
