@@ -5,6 +5,8 @@ import { Inertia } from "@inertiajs/inertia";
 import { route } from "ziggy-custom";
 import { toast } from "vue3-toastify";
 import ModalDelete from '@/Components/Custom/ModalDelete.vue';
+import ModalForm from '@/Components/Custom/ModalForm.vue';
+import Header from '@/Components/Custom/Header.vue';
 
 /** Columnas de la tabla */
 interface Column {
@@ -42,12 +44,13 @@ const form = useForm<Record<string, any>>(
     props.formFields.reduce((o, f) => ((o[f.key] = ""), o), {})
 );
 
-const showModalDelete = ref<InstanceType<typeof ModalDelete> | null>(null)
 const loading = computed(() => form.processing);
-const showModal = ref(false);
 const isEdit = ref(false);
 const editingId = ref<number | null>(null);
 const deletingId = ref<number | null>(null);
+const showModalDelete = ref<InstanceType<typeof ModalDelete> | null>(null);
+const showForm = ref<InstanceType<typeof ModalForm> | null>(null);
+const header = ref<InstanceType<typeof Header> | null>(null);
 
 function reload(page = 1) {
     Inertia.get(route(`${props.resourceName}.index`), { page });
@@ -57,14 +60,14 @@ function openCreate() {
     isEdit.value = false;
     editingId.value = null;
     form.reset();
-    showModal.value = true;
+    showForm.value?.show();
 }
 
 function openEdit(item: Record<string, any>) {
     isEdit.value = true;
     editingId.value = item.id;
     Object.assign(form, item);
-    showModal.value = true;
+    showForm.value?.show();
 }
 
 function confirmDelete(id: number) {
@@ -80,7 +83,7 @@ function submit() {
                     isEdit.value ? "actualizado" : "creado"
                 } con éxito`
             );
-            showModal.value = false;
+            showForm.value?.hide();
             form.reset();
             reload();
         },
@@ -116,28 +119,13 @@ function doDelete() {
 
 <template>
     <div class="space-y-6">
-        <!-- Cabecera + controles -->
-        <div
-            class="m-5 p-4 bg-white rounded-lg shadow flex items-center justify-between"
-        >
-            <h1 class="text-2xl font-semibold">{{ title }}</h1>
-            <div class="flex items-center space-x-2">
-                <button
-                    @click="reload()"
-                    :disabled="loading"
-                    class="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 shadow-sm"
-                >
-                    Consultar
-                </button>
-                <button
-                    @click="openCreate"
-                    :disabled="loading"
-                    class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600 transition-colors duration-200 shadow-sm"
-                >
-                    Nuevo
-                </button>
-            </div>
-        </div>
+        <Header
+            ref="header"
+            :title="title"
+            :loading="loading"
+            :onCreate="openCreate"
+            :onReaload="reload"
+        />
 
         <!-- Tabla -->
         <div class="overflow-x-auto mx-5 bg-white rounded-lg shadow">
@@ -205,7 +193,7 @@ function doDelete() {
                         >
                             No hay registros
                         </td>
-                    </tr>showDelete.value = false;
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -226,79 +214,16 @@ function doDelete() {
                 {{ p }}
             </button>
         </div>
-
-        <!-- Modal Crear/Editar -->
-        <div
-            v-if="showModal"
-            class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-        >
-            <div class="bg-white rounded-lg p-6 w-full max-w-lg relative">
-                <button
-                    @click="showModal = false"
-                    class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                >
-                    &times;
-                </button>
-                <h2 class="text-xl mb-4">
-                    {{ isEdit ? "Editar" : "Crear" }} {{ title }}
-                </h2>
-                <form @submit.prevent="submit" class="space-y-4">
-                    <div v-for="f in formFields" :key="f.key">
-                        <label class="block text-sm mb-1">{{ f.label }}</label>
-                        <!-- si es select, renderiza un <select> -->
-                        <template v-if="f.type === 'select'">
-                            <select
-                                v-model="form[f.key]"
-                                class="mt-1 block w-full rounded border-gray-300"
-                            >
-                                <option value="">
-                                    {{ f.placeholder || "-- Selecciona --" }}
-                                </option>
-                                <option
-                                    v-for="opt in f.options"
-                                    :key="opt.value"
-                                    :value="opt.value"
-                                >
-                                    {{ opt.label }}
-                                </option>
-                            </select>
-                        </template>
-                        <!-- en cualquier otro caso, un input normal -->
-                        <template v-else>
-                            <input
-                                v-model="form[f.key]"
-                                :type="f.type || 'text'"
-                                :step="f.type === 'number' ? 0.01 : undefined"
-                                :placeholder="f.placeholder || ''"
-                                class="mt-1 block w-full rounded border-gray-300"
-                            />
-                        </template>
-                        <div
-                            v-if="form.errors[f.key]"
-                            class="text-red-600 text-sm mt-1"
-                        >
-                            {{ form.errors[f.key] }}
-                        </div>
-                    </div>
-                    <div class="flex justify-end gap-2">
-                        <button
-                            type="button"
-                            @click="showModal = false"
-                            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                        >
-                            Cancelar
-                        </button>
-                        <button
-                            type="submit"
-                            :disabled="loading"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-                        >
-                            {{ isEdit ? "Actualizar" : "Guardar" }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <ModalForm
+            ref="showForm"
+            :title="title"
+            :fields="formFields"
+            :form="form"
+            :errors="form.errors"
+            :is-edit="isEdit"
+            :loading="loading"
+            :on-submit="submit"
+        />
         <ModalDelete
             ref="showModalDelete"
             :loading="loading"
