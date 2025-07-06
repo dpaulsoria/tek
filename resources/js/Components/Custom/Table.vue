@@ -35,7 +35,7 @@ function changePage(page: number) {
 </script>
 
 <template>
-  <div class="overflow-x-auto mx-5 bg-white rounded-lg shadow">
+  <div class="overflow-x-auto mx-5 bg-white rounded-lg shadow mb-5">
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
@@ -75,18 +75,20 @@ function changePage(page: number) {
             {{ col.formatter ? col.formatter(item) : item[col.key] }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
-            <button
-              @click="handleEdit(item.id)"
-              class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Editar
-            </button>
-            <button
-              @click="handleDelete(item.id)"
-              class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              Borrar
-            </button>
+            <slot name="actions" :item="item">
+              <button
+                @click="handleEdit(item.id)"
+                class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Editar
+              </button>
+              <button
+                @click="handleDelete(item.id)"
+                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Borrar
+              </button>
+            </slot>
           </td>
         </tr>
         <tr v-if="!items.data.length">
@@ -96,8 +98,7 @@ function changePage(page: number) {
         </tr>
       </tbody>
     </table>
-    <!-- Paginación -->
-    <div class="flex justify-center space-x-1 mt-4">
+    <div class="flex flex-wrap justify-center gap-1 mt-4 overflow-x-auto px-5">
       <button
         v-for="p in items.last_page"
         :key="p"

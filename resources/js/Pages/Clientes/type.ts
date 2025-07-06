@@ -1,3 +1,5 @@
+import { Cite } from "../Citas/type";
+
 export interface Person {
     phone: string;
     address: string;
@@ -5,5 +7,6 @@ export interface Person {
     document: string;
     first_name: string;
     last_name: string;
-    email: string
+    email: string;
+    cites: Cite[];
 }

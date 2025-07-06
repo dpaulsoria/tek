@@ -18,39 +18,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Lee del .env o usa valores por defecto
-        $nPersons    = env('SEED_PERSONS', 50);
-        $nServices   = env('SEED_SERVICES', 10);
-        $nCites      = env('SEED_CITES', 200);
-        $nAttentions = env('SEED_ATTENTIONS', 500);
+        $nPersons  = env('SEED_PERSONS',    50);
+        $nServices = env('SEED_SERVICES',   10);
 
-        // 1) Personas
-        Person::factory()->count($nPersons)->create();
-
-        // 2) Servicios y sus precios
-        Service::factory()
+        $services = Service::factory()
             ->count($nServices)
             ->create()
-            ->each(fn($service) => PriceService::factory()->for($service)->create());
+            ->each(fn($service) =>
+                PriceService::factory()
+                    ->for($service)
+                    ->create()
+            );
 
-        // 3) Citas (con relación a personas existentes)
-        Cite::factory()
-            ->count($nCites)
-            ->for(Person::inRandomOrder()->first(), 'person')
-            ->create();
+        $serviceIds = $services->pluck('id')->all();
 
-        // 4) Atenciones (con relación a citas y servicios existentes)
-        Attention::factory()
-            ->count($nAttentions)
-            ->for(Cite::inRandomOrder()->first(), 'cite')
-            ->for(Service::inRandomOrder()->first(), 'service')
-            ->create();
+        Person::factory()
+            ->count($nPersons)
+            ->create()
+            ->each(function($person) {
+                Cite::factory()
+                    ->count(rand(0, 3))           // 0–3 citas por persona
+                    ->create(['cliente_id' => $person->id]);
+            });
 
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $allCites = Cite::all();
+        $allCites->each(function($cite) use ($serviceIds) {
+            $nAtt = rand(0, 3);                 // 0–3 atenciones por cita
+            Attention::factory()
+                ->count($nAtt)
+                ->create([
+                    'cite_id'    => $cite->id,
+                    'service_id' => $serviceIds[array_rand($serviceIds)],
+                ]);
+        });
     }
 }

@@ -1,3 +1,6 @@
+import { Attention } from "../Atenciones/type"
+import { Person } from "../Clientes/type"
+
 export interface Cite {
   id: number
   date: string
@@ -6,8 +9,8 @@ export interface Cite {
   amount_attention: number
   total_service: number
   status: 'pendiente' | 'confirmada' | 'cancelada'
-  // si quieres acceso al nombre del cliente:
-  person?: { id: number; name: string }
+  person: Person
+  attentions: Attention[]
 }
 
 export enum CITE_STATE {

@@ -11,13 +11,13 @@ class PersonController extends Controller
 {
     public function index()
     {
-        $clientes = Person::orderBy('last_name')->paginate(5);
+        $clientes = Person::with('cites.attentions.service')->paginate(5);
         return Inertia::render('Clientes/Index', compact('clientes'));
     }
 
     public function indexApp(): JsonResponse
     {
-        $clientes = Person::orderBy('last_name')->get();
+        $clientes = Person::with('cites.attentions.service')->get();
         return response()->json($clientes, 200);
     }
 

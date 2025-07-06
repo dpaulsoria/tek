@@ -12,8 +12,7 @@ class ServiceController extends Controller
     public function index()
     {
         // 1) Paginamos los servicios
-        $servicios = Service::orderBy('name')
-            ->paginate(10);
+        $servicios = Service::paginate(10);
 
         return Inertia::render('Servicios/Index', compact('servicios'));
     }

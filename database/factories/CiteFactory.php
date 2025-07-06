@@ -14,7 +14,7 @@ class CiteFactory extends Factory
         return [
             'date'             => $this->faker->dateTimeBetween('-1 year','now')->format('Y-m-d'),
             'time_arrival'     => $this->faker->time('H:i:s'),
-            'cliente_id'       => Person::factory(),
+            // 'cliente_id'       => Person::factory(),
             'amount_attention' => $this->faker->numberBetween(1,5),
             'total_service'    => $this->faker->randomFloat(2, 20, 500),
             'status'           => $this->faker->randomElement(['PENDIENTE', 'CONFIRMADA', 'CANCELADA']),

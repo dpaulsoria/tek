@@ -25,6 +25,7 @@ const servicios = computed(() => page.props.value.servicios)
       resourceName="servicios"
       title="Servicios"
       :columns="[
+        { key:'id',   label:'ID'     },
         { key:'name', label:'Nombre' },
         { key:'slug', label:'Slug'   }
       ]"

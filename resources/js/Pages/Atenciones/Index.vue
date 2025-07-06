@@ -7,6 +7,7 @@ import type { Attention }   from './type'
 import type { Cite }        from '@/Pages/Citas/type'
 import type { Service }     from '@/Pages/Servicios/type'
 import type { Paginated, User, SelectOption } from '@/Types'
+import { formatDate } from '../Util'
 
 interface PageProps {
   atenciones: Paginated<Attention>
@@ -41,7 +42,8 @@ const servicioOptions: SelectOption[] = serviciosList.value.map(s => ({
       resourceName="atenciones"
       title="Atenciones"
       :columns="[
-        { key:'date',          label:'Fecha'    },
+        { key:'id',         label:'ID'    },
+        { key:'date',          label:'Fecha', formatter: (it) => formatDate(it) },
         {
           key:'cite_id',
           label:'Cita',

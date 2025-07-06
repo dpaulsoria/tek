@@ -12,14 +12,14 @@ class CiteController extends Controller
 {
     public function index()
     {
-        $citas = Cite::with('person')->orderBy('date', 'DESC')->paginate(10);
+        $citas = Cite::with(['person', 'attentions.service'])->paginate(10);
         $clientes = Person::select(['id','document','first_name','last_name'])->get();
         return Inertia::render('Citas/Index', compact('citas', 'clientes'));
     }
 
     public function create()
     {
-        $clientes = Person::orderBy('last_name')->get();
+        $clientes = Person::get();
         return Inertia::render('Citas/Create', compact('clientes'));
     }
 

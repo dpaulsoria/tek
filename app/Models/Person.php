@@ -26,4 +26,17 @@ class Person extends Model
     {
         return $this->hasMany(Cite::class, 'cliente_id');
     }
+
+    /** 1 Person → N Attentions (vía citas) */
+    public function attentions()
+    {
+        return $this->hasManyThrough(
+            Attention::class,  // Modelo destino
+            Cite::class,       // Pivot (intermedio)
+            'cliente_id',      // FK en cites -> person
+            'cite_id',         // FK en attention -> cite
+            'id',              // PK en person
+            'id'               // PK en cite
+        );
+    }
 }

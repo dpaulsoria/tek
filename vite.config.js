@@ -5,7 +5,7 @@ import path from 'path'
 
 export default defineConfig({
   base: '',
-resolve: {
+  resolve: {
     alias: [
       {
         find: /^ziggy-custom$/,
