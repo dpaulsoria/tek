@@ -4,6 +4,7 @@ import { useForm } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 import { route } from "ziggy-custom";
 import { toast } from "vue3-toastify";
+import ModalDelete from '@/Components/Custom/ModalDelete.vue';
 
 /** Columnas de la tabla */
 interface Column {
@@ -41,11 +42,11 @@ const form = useForm<Record<string, any>>(
     props.formFields.reduce((o, f) => ((o[f.key] = ""), o), {})
 );
 
+const showModalDelete = ref<InstanceType<typeof ModalDelete> | null>(null)
 const loading = computed(() => form.processing);
 const showModal = ref(false);
 const isEdit = ref(false);
 const editingId = ref<number | null>(null);
-const showDelete = ref(false);
 const deletingId = ref<number | null>(null);
 
 function reload(page = 1) {
@@ -68,7 +69,7 @@ function openEdit(item: Record<string, any>) {
 
 function confirmDelete(id: number) {
     deletingId.value = id;
-    showDelete.value = true;
+    showModalDelete.value?.show()
 }
 
 function submit() {
@@ -103,7 +104,7 @@ function doDelete() {
     Inertia.delete(route(`${props.resourceName}.destroy`, deletingId.value), {
         onSuccess: () => {
             toast.success(`${props.title} eliminado`);
-            showDelete.value = false;
+            showModalDelete.value?.hide()
             reload();
         },
         onError: () => {
@@ -204,7 +205,7 @@ function doDelete() {
                         >
                             No hay registros
                         </td>
-                    </tr>
+                    </tr>showDelete.value = false;
                 </tbody>
             </table>
         </div>
@@ -298,39 +299,10 @@ function doDelete() {
                 </form>
             </div>
         </div>
-
-        <!-- Modal Borrar -->
-        <div
-            v-if="showDelete"
-            class="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-        >
-            <div class="bg-white rounded-lg p-6 w-full max-w-sm relative">
-                <button
-                    @click="showDelete = false"
-                    class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                >
-                    &times;
-                </button>
-                <h2 class="text-lg mb-4">Confirmar borrado</h2>
-                <p class="mb-4">
-                    ¿Estás seguro que quieres eliminar este registro?
-                </p>
-                <div class="flex justify-end gap-2">
-                    <button
-                        @click="showDelete = false"
-                        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                    >
-                        Cancelar
-                    </button>
-                    <button
-                        @click="doDelete"
-                        :disabled="loading"
-                        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
-                    >
-                        Borrar
-                    </button>
-                </div>
-            </div>
-        </div>
+        <ModalDelete
+            ref="showModalDelete"
+            :loading="loading"
+            :onConfirm="doDelete"
+        />
     </div>
 </template>
