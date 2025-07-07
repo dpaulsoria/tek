@@ -14,4 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class,'logout']);
     Route::get('clientes', [PersonController::class, 'indexApp']);
     Route::post('citas', [CiteController::class, 'storeApp']);
+    Route::get('citas', [CiteController::class,'indexApp']);
+    Route::patch('citas/{cita}', [CiteController::class,'updateApp']);
+    Route::delete('citas/{cita}', [CiteController::class,'destroyApp']);
 });

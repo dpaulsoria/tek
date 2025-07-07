@@ -51,6 +51,33 @@ class CiteController extends Controller
         return response()->json($created, 200);
     }
 
+    public function indexApp(Request $request): JsonResponse {
+    $query = Cite::query();
+    if ($request->has('cliente_id')) {
+        $query->where('cliente_id', $request->cliente_id);
+    }
+    $citas = $query->get();
+    return response()->json($citas, 200);
+    }
+
+    public function updateApp(Request $request, Cite $cita): JsonResponse {
+        $data = $request->validate([
+            'date'             => 'sometimes|date',
+            'time_arrival'     => 'sometimes',
+            'cliente_id'       => 'sometimes|exists:person,id',
+            'amount_attention' => 'nullable|integer',
+            'total_service'    => 'nullable|numeric',
+            'status'           => 'sometimes|string',
+        ]);
+        $cita->update($data);
+        return response()->json($cita, 200);
+    }
+
+    public function destroyApp(Cite $cita): JsonResponse {
+        $cita->update(['status'=>'CANCELADA']);
+        return response()->json(null, 204);
+    }
+
     public function edit(Cite $cita)
     {
         $clientes = Person::orderBy('last_name')->get();
