@@ -43,7 +43,7 @@ const servicioOptions: SelectOption[] = serviciosList.value.map(s => ({
       title="Atenciones"
       :columns="[
         { key:'id',         label:'ID'    },
-        { key:'date',          label:'Fecha', formatter: (it) => formatDate(it) },
+        { key:'date',          label:'Fecha', formatter: (it) => formatDate(it.date) },
         {
           key:'cite_id',
           label:'Cita',

@@ -43,7 +43,7 @@ function showAttentions(citeId: number) {
 const columns = [
     { key: "id", label: "ID" },
     { key: "date", label: "Fecha" },
-    { key: "time_arrival", label: "Hora llegada", formatter: (it) => formatDate(it) },
+    { key: "time_arrival", label: "Hora llegada", formatter: (it) => formatDate(it.time_arrival) },
     {
         key: "cliente_id",
         label: "Cliente",
@@ -78,7 +78,7 @@ const formFields = [
 
 const attentionColumns = [
     { key: "id", label: "ID" },
-    { key: "date", label: "Fecha Atención", formatter: (it) => formatDate(it) },
+    { key: "date", label: "Fecha Atención", formatter: (it) => formatDate(it.date) },
     {
         key: "service.name",
         label: "Servicio",

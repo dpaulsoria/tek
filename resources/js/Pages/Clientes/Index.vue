@@ -22,7 +22,7 @@ const modalCitas = ref<InstanceType<typeof ModalList> | null>(null);
 const citaColumns = [
     { key: "id", label: "ID" },
     { key: "date", label: "Fecha" },
-    { key: "time_arrival", label: "Hora llegada",  formatter: (it) => formatDate(it)  },
+    { key: "time_arrival", label: "Hora llegada",  formatter: (it) => formatDate(it.time_arrival)  },
     { key: "status", label: "Estado" },
 ];
 
