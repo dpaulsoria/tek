@@ -46,6 +46,11 @@ Una aplicación de gestión de clientes, citas y atenciones para **Peluquería A
    DB_USERNAME=TU_USUARIO
    DB_PASSWORD=TU_CONTRASEÑA
 
+   # Usuario de Pruebas generadoen la migracion insert_test_admin_user
+   ADMIN_TEST_NAME="Admin Pruebas"
+   ADMIN_TEST_EMAIL="admin@example.com"
+   ADMIN_TEST_PASSWORD="admin1234"
+
    # Certificado SSL en base64 para inyectarlo vía start.sh
    MYSQL_ATTR_SSL_CA_B64=TU_CERT_BASE64
    #Nota: MYSQL_ATTR_SSL_CA_B64 debe ser tu ca.pem codificado en Base64 (sin saltos de línea)
