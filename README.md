@@ -55,6 +55,18 @@ Una aplicación de gestión de clientes, citas y atenciones para **Peluquería A
    MYSQL_ATTR_SSL_CA_B64=TU_CERT_BASE64
    #Nota: MYSQL_ATTR_SSL_CA_B64 debe ser tu ca.pem codificado en Base64 (sin saltos de línea)
    ```
+
+## Base de Datos
+La base de datos de este proyeto se realizo en un servidor gratuito en la nube, cada servicio en la nube otorga la correcta configuracion para conectar su aplicacion con la base de datos.
+Entre estos datos se encuentra el certificado SSL.
+Sin certificado SSL y la correcta configuracion hacia la base de datos, el proyecto no funcionara.
+Si insisten en levantar el proyecto sin utilizar `docker`, lo cual no recomiendo.
+Entonces deben crear la carpeta 'certs' dentro de la carpeta /storage y pegar el certificado de la base en formato .pem
+Luego, poner la ruta relativa o absoluta de ese archivo en la variable de entorno MYSQL_ATTR_SSL_CA.
+
+En sistemas UNIX: El sistema funciona sin este archivo, ya que se puede serializar en formato de base 64 y poner el serial en la variable de entorno MYSQL_ATTR_SSL_CA_B64.
+El script start.sh se encarga de convertir ese binario en el archivo correspondiente '/storage/certs/ca.pem' (Esto se realizo para el despliegue en la nube)
+
 ## 🐳 Ejecución con Docker
 
 Desde la raíz del proyecto:
